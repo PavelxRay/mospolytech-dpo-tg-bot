@@ -2,7 +2,7 @@ name: Build and Push DPO Telegram Bot
 run-name: Bot Deployment triggered by ${{ github.actor }}
 
 env:
-  IMAGE_NAME: DPO_telegram_bot
+  IMAGE_NAME: dpo_telegram_bot
 
 on:
   workflow_dispatch:  # This makes the workflow manual
