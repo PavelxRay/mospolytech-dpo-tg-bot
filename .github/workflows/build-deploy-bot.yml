@@ -27,15 +27,15 @@ jobs:
 
   deploy:
     name: Deploy Docker Container
-    runs-on: [self-hosted, vm-1958]
+    runs-on: [self-hosted]
     needs: build
     if: startsWith(github.event.head_commit.message, 'Deploy. ')
     steps:
       - name: Stop and Remove Old Container
         run: |
-          if [ "$(docker ps -a -q -f name=tg_bot)" ]; then
-            docker stop tg_bot
-            docker rm tg_bot
+          if [ "$(docker ps -a -q -f name=tg_bot_dpo)" ]; then
+            docker stop tg_bot_dpo
+            docker rm tg_bot_dpo
           fi
 
       - name: Remove Old Image
@@ -46,4 +46,4 @@ jobs:
 
       - name: Deploy Container
         run: |
-          docker run -d --name tg_bot --restart always --network tgnetwork -e TG_TOKEN=${{ secrets.TG_BOT_TOKEN }} ${{ env.IMAGE_NAME }}
+          docker run -d --name tg_bot_dpo --restart always --network tgnetwork -e TG_TOKEN=${{ secrets.TG_BOT_TOKEN }} ${{ env.IMAGE_NAME }}
