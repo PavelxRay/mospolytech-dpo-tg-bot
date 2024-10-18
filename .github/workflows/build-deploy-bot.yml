@@ -8,7 +8,7 @@ on:
 jobs:
   build:
     runs-on: [self-hosted, custom-vm-1]
-    if: startsWith(github.event.head_commit.message, 'Deploy. ')  # Check if commit message starts with "Deploy. "
+    if: startsWith(github.event.head_commit.message, 'Deploy.')  # Deploy only if commit message starts with "Deploy. "
     steps:
       - run: echo "The job was automatically triggered by a ${{ github.event_name }} event."
       - run: echo "This job is now running on a ${{ runner.os }} custom server"
