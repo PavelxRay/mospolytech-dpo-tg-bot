@@ -38,12 +38,6 @@ jobs:
             docker rm tg_bot_dpo
           fi
 
-      - name: Remove Old Image
-        run: |
-          if [ "$(docker images -q ${{ env.IMAGE_NAME }})" ]; then
-            docker rmi ${{ env.IMAGE_NAME }}
-          fi
-
       - name: Deploy Container
         run: |
           docker run -d --name tg_bot_dpo --restart always --network tgnetwork -e TG_TOKEN=${{ secrets.TG_BOT_TOKEN }} ${{ env.IMAGE_NAME }}
