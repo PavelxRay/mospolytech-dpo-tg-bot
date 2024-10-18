@@ -3,6 +3,7 @@ run-name: Bot Deployment triggered by ${{ github.actor }}
 
 env:
   IMAGE_NAME: dpo_telegram_bot
+  # if problem with docker: sudo chown $USER /var/run/docker.sock
 
 on:
   workflow_dispatch:  # This makes the workflow manual
