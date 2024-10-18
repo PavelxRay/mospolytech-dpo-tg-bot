@@ -1,23 +1,48 @@
 name: Build and Push DPO Telegram Bot
 run-name: Bot Deployment triggered by ${{ github.actor }}
 
+env:
+  IMAGE_NAME: DPO_telegram_bot
+
 on:
   workflow_dispatch:  # This makes the workflow manual
   push:
 
 jobs:
   build:
+    name: Build DPO TGBOT Image
     runs-on: [self-hosted]
     if: startsWith(github.event.head_commit.message, 'Deploy.')  # Deploy only if commit message starts with "Deploy. "
     steps:
-      - run: echo "The job was automatically triggered by a ${{ github.event_name }} event."
-      - run: echo "This job is now running on a ${{ runner.os }} custom server"
-      - run: echo "The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
-      - name: Check out repository code
-        uses: actions/checkout@v4
-      - run: echo "The ${{ github.repository }} repository has been cloned to the runner."
-      - run: echo "🖥The workflow is now ready to test your code on the runner."
-      - name: List files in the repository
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Build Docker Image Locally
         run: |
-          ls ${{ github.workspace }}
-      - run: echo "🍏 This job's status is ${{ job.status }}."
+          docker build --build-arg TG_TOKEN=${{ secrets.TG_BOT_TOKEN }} -t ${{ env.IMAGE_NAME }} -f ./Dockerfile .
+
+  deploy:
+    name: Deploy Docker Container
+    runs-on: [self-hosted, vm-1958]
+    needs: build
+    if: startsWith(github.event.head_commit.message, 'Deploy. ')
+    steps:
+      - name: Stop and Remove Old Container
+        run: |
+          if [ "$(docker ps -a -q -f name=tg_bot)" ]; then
+            docker stop tg_bot
+            docker rm tg_bot
+          fi
+
+      - name: Remove Old Image
+        run: |
+          if [ "$(docker images -q ${{ env.IMAGE_NAME }})" ]; then
+            docker rmi ${{ env.IMAGE_NAME }}
+          fi
+
+      - name: Deploy Container
+        run: |
+          docker run -d --name tg_bot --restart always --network tgnetwork -e TG_TOKEN=${{ secrets.TG_BOT_TOKEN }} ${{ env.IMAGE_NAME }}
