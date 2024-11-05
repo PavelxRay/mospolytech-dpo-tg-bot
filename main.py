@@ -5,6 +5,7 @@ from aiogram import Bot, Dispatcher
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 from aiogram.fsm.storage.memory import MemoryStorage
+from aiogram.types import MenuButtonCommands
 from dotenv import load_dotenv
 
 from handlers import commands_router, documents_fsm_router, ALL_COMMANDS
@@ -20,6 +21,7 @@ async def main() -> None:
 
     bot = Bot(token=TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
     await bot.set_my_commands(ALL_COMMANDS)
+    await bot.set_chat_menu_button(menu_button=MenuButtonCommands())
     await dp.start_polling(bot)
 
 
