@@ -1,2 +1,2 @@
-from handlers.commands import commands_router
+from handlers.commands import commands_router, ALL_COMMANDS
 from handlers.fsm.documents_fsm import documents_fsm_router

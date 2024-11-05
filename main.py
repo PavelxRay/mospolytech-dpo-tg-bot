@@ -7,7 +7,7 @@ from aiogram.enums import ParseMode
 from aiogram.fsm.storage.memory import MemoryStorage
 from dotenv import load_dotenv
 
-from handlers import commands_router, documents_fsm_router
+from handlers import commands_router, documents_fsm_router, ALL_COMMANDS
 
 
 async def main() -> None:
@@ -19,6 +19,7 @@ async def main() -> None:
     dp.include_router(documents_fsm_router)
 
     bot = Bot(token=TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
+    await bot.set_my_commands(ALL_COMMANDS)
     await dp.start_polling(bot)
 
 

@@ -1,12 +1,20 @@
 from aiogram import Router, F
 from aiogram.filters import CommandStart, Command
 from aiogram.fsm.context import FSMContext
-from aiogram.types import Message
+from aiogram.types import Message, BotCommand
 
 from handlers.keyboards import after_start_keyboard
 
 
 commands_router = Router()
+
+ALL_COMMANDS = [
+    BotCommand(command="start", description="Начать взаимодействие"),
+    BotCommand(command="documents", description="Заполнить документы"),
+    BotCommand(command="programs", description="Доступные программы"),
+    BotCommand(command="advice", description="Подобрать программу"),
+    BotCommand(command="cancel", description="Отменить"),
+]
 
 
 @commands_router.message(CommandStart())
@@ -26,6 +34,7 @@ async def command_start_handler(message: Message, state: FSMContext) -> None:
 
 
 @commands_router.message(F.text.in_({"📊 Рекомендации", "📋 Просмотр программ"}))
-@commands_router.message(Command("programs", "advice"))
+@commands_router.message(Command("programs", "advice", "cancel"))
 async def not_implemented_commands_handler(message: Message) -> None:
     await message.answer("Пока не реализовано")
+    # TODO: реализовать команду cancel. Она должна отменять любой текущий сценарий
