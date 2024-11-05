@@ -5,9 +5,15 @@ from aiogram import Router, F
 from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import StatesGroup, State
-from aiogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery, InputMediaDocument, \
+from aiogram.types import (
+    Message,
+    CallbackQuery,
+    InputMediaDocument,
     FSInputFile
+)
 from docxtpl import DocxTemplate
+
+from handlers.keyboards import agreement_keyboard
 
 
 documents_fsm_router = Router()
@@ -28,14 +34,7 @@ class ApplicationForm(StatesGroup):
     email = State()
 
 
-def agreement_keyboard():
-    keyboard = InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text="Продолжить", callback_data="continue")],
-        [InlineKeyboardButton(text="Стоп", callback_data="stop")]
-    ])
-    return keyboard
-
-
+@documents_fsm_router.message(F.text == "📄 Заявление и договор")
 @documents_fsm_router.message(Command("documents"))
 async def start_filling_documents(message: Message, state: FSMContext):
     await state.clear()
