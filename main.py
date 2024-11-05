@@ -12,7 +12,7 @@ from handlers import commands_router, documents_fsm_router
 
 async def main() -> None:
     load_dotenv()
-    TOKEN = getenv("BOT_TOKEN")
+    TOKEN = getenv("TG_BOT_TOKEN")
 
     dp = Dispatcher(storage=MemoryStorage())
     dp.include_router(commands_router)
