@@ -13,7 +13,7 @@ from aiogram.types import (
 )
 from docxtpl import DocxTemplate
 
-from handlers.keyboards import agreement_keyboard
+from bot.handlers.keyboards import agreement_keyboard
 
 
 documents_fsm_router = Router()
