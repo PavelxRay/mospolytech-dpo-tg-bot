@@ -1,5 +1,4 @@
 import datetime
-from uuid import UUID
 
 from sqlalchemy import String
 from sqlalchemy.orm import Mapped, mapped_column
@@ -10,7 +9,7 @@ from database.sqlalchemy_base import Base
 class Person(Base):
     __tablename__ = "persons"
 
-    id: Mapped[UUID] = mapped_column(primary_key=True, index=True)
+    id: Mapped[int] = mapped_column(primary_key=True, index=True)
     telegram_user_id: Mapped[str] = mapped_column(unique=True, index=True)
     dttm_created: Mapped[datetime.datetime]
     full_name: Mapped[str]
