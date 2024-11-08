@@ -15,14 +15,9 @@ from database.sqlalchemy_base import Base
 # access to the values within the .ini file in use.
 config = context.config
 
-# Setting parts of db url in alembic.ini with environment variables
-ini_section = config.config_ini_section
+# Setting database url for alembic from app config
 db = app_config.database
-config.set_section_option(ini_section, "DB_USER", db.user)
-config.set_section_option(ini_section, "DB_PASSWORD", db.password)
-config.set_section_option(ini_section, "DB_HOST", db.host)
-config.set_section_option(ini_section, "DB_PORT", db.port)
-config.set_section_option(ini_section, "DB_NAME", db.db_name)
+config.set_main_option("sqlalchemy.url", db.url)
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.

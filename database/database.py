@@ -11,9 +11,7 @@ class Database:
 
     async def connect(self) -> None:
         db = config.database
-        db_url = f"postgresql+asyncpg://{db.user}:{db.password}@{db.host}:{db.port}/{db.db_name}"
-
-        self.engine = create_async_engine(db_url)
+        self.engine = create_async_engine(db.url)
         self.session = async_sessionmaker(self.engine, expire_on_commit=False)
 
     async def disconnect(self) -> None:

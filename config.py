@@ -1,5 +1,6 @@
 import os
 from dataclasses import dataclass
+from typing import Optional
 
 from dotenv import load_dotenv
 
@@ -16,6 +17,7 @@ class DatabaseConfig:
     user: str
     password: str
     db_name: str
+    url: Optional[str] = None
 
 
 @dataclass
@@ -38,6 +40,8 @@ def setup_config() -> Config:
             db_name=os.getenv("DB_NAME"),
         )
     )
+    db = cfg.database
+    cfg.database.url = f"postgresql+asyncpg://{db.user}:{db.password}@{db.host}:{db.port}/{db.db_name}"
     return cfg
 
 
