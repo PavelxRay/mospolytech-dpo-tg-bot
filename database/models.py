@@ -23,10 +23,3 @@ class Person(Base):
     snils: Mapped[str] = mapped_column(String(11))
     phone: Mapped[str]
     email: Mapped[str]
-
-
-class Program(Base):
-    __tablename__ = "programs"
-
-    id: Mapped[UUID] = mapped_column(primary_key=True, index=True)
-    # all other fields
