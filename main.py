@@ -1,27 +1,16 @@
 import asyncio
-from os import getenv
 
-from aiogram import Bot, Dispatcher
-from aiogram.client.default import DefaultBotProperties
-from aiogram.enums import ParseMode
-from aiogram.fsm.storage.memory import MemoryStorage
-from aiogram.types import MenuButtonCommands
-from dotenv import load_dotenv
-
-from handlers import commands_router, documents_fsm_router, ALL_COMMANDS
+from bot.bot import setup_bot
+from bot.dispatcher import setup_dispatcher
+from bot.middlewares import setup_middlewares
+from database.database import setup_database
 
 
 async def main() -> None:
-    load_dotenv()
-    TOKEN = getenv("TG_BOT_TOKEN")
-
-    dp = Dispatcher(storage=MemoryStorage())
-    dp.include_router(commands_router)
-    dp.include_router(documents_fsm_router)
-
-    bot = Bot(token=TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
-    await bot.set_my_commands(ALL_COMMANDS)
-    await bot.set_chat_menu_button(menu_button=MenuButtonCommands())
+    dp = setup_dispatcher()
+    setup_middlewares(dp)
+    setup_database(dp)
+    bot = await setup_bot()
     await dp.start_polling(bot)
 
 

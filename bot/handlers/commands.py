@@ -3,7 +3,7 @@ from aiogram.filters import CommandStart, Command
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, BotCommand
 
-from handlers.keyboards import after_start_keyboard
+from bot.handlers.keyboards import after_start_keyboard
 
 
 commands_router = Router()
