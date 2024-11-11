@@ -46,15 +46,17 @@ jobs:
 
       - name: Run PostgreSQL Container
         run: |
-          docker run -d \
-            --name postgres_dpo \
-            --restart always \
-            --network tgnetwork \
-            -e POSTGRES_USER=${{ secrets.POSTGRES_USER }} \
-            -e POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} \
-            -e POSTGRES_DB=${{ secrets.POSTGRES_DB }} \
-            -p 5445:5432 \
-            postgres:latest
+          if [ -z "$(docker ps -a -q -f name=postgres_dpo)" ]; then
+            docker run -d \
+              --name postgres_dpo \
+              --restart always \
+              --network tgnetwork \
+              -e POSTGRES_USER=${{ secrets.POSTGRES_USER }} \
+              -e POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} \
+              -e POSTGRES_DB=${{ secrets.POSTGRES_DB }} \
+              -p 5445:5432 \
+              postgres:latest
+          fi
 
       - name: Deploy Container
         run: |
