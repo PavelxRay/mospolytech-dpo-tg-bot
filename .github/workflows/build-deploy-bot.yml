@@ -53,7 +53,7 @@ jobs:
             -e POSTGRES_USER=${{ secrets.POSTGRES_USER }} \
             -e POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} \
             -e POSTGRES_DB=${{ secrets.POSTGRES_DB }} \
-            -p 5432:5432 \
+            -p 5445:5432 \
             postgres:latest
 
       - name: Deploy Container
@@ -64,7 +64,7 @@ jobs:
             --network tgnetwork \
             -e TG_TOKEN=${{ secrets.TG_BOT_TOKEN }} \
             -e DB_HOST=postgres_dpo \
-            -e DB_PORT=5432
+            -e DB_PORT=5445
             -e DB_USER=${{ secrets.POSTGRES_USER }} \
             -e DB_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} \
             -e DB_NAME=${{ secrets.POSTGRES_DB }} \
