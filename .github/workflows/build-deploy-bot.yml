@@ -37,6 +37,16 @@ jobs:
             docker stop tg_bot_dpo
             docker rm tg_bot_dpo
           fi
+          if [ "$(docker ps -a -q -f name=postgres_dpo)" ]; then
+            docker stop postgres_dpo
+            docker rm postgres_dpo
+          fi
+
+      - name: Create Docker Volume for PostgreSQL
+        run: |
+          if [ -z "$(docker volume ls -q -f name=postgres_data)" ]; then
+            docker volume create postgres_data
+          fi
 
       - name: Create Docker Network
         run: |
@@ -46,17 +56,16 @@ jobs:
 
       - name: Run PostgreSQL Container
         run: |
-          if [ -z "$(docker ps -a -q -f name=postgres_dpo)" ]; then
-            docker run -d \
-              --name postgres_dpo \
-              --restart always \
-              --network tgnetwork \
-              -e POSTGRES_USER=${{ secrets.POSTGRES_USER }} \
-              -e POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} \
-              -e POSTGRES_DB=${{ secrets.POSTGRES_DB }} \
-              -p 5445:5432 \
-              postgres:latest
-          fi
+          docker run -d \
+            --name postgres_dpo \
+            --restart always \
+            --network tgnetwork \
+            -e POSTGRES_USER=${{ secrets.POSTGRES_USER }} \
+            -e POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} \
+            -e POSTGRES_DB=${{ secrets.POSTGRES_DB }} \
+            -p 5445:5432 \
+            -v postgres_data:/var/lib/postgresql/data \
+            postgres:latest
 
       - name: Deploy Container
         run: |
