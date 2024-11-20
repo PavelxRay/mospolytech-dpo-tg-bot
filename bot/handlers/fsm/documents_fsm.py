@@ -71,33 +71,28 @@ def qualification_from_program(program_name: str):
     return "Лучший специалист в мире"
 
 
-def create_documents(data: Dict[str, Any], create_contract=True, create_statement=True) -> list[InputMediaDocument]:
+def create_documents(data: Dict[str, Any]) -> list[InputMediaDocument]:
     result = []
 
     data["date"] = cap_current_date()
+    data["full_name_gent"] = genter(data["full_name"])
     data["qualification_name"] = qualification_from_program(data["program_name"])
 
-    if create_contract:
-        # TODO: сделать, чтобы путь до файла брался из переменных окружения (.env)
-        contract = DocxTemplate("docs_templates/contract_template.docx")
-        contract.render(data)
-        # TODO: сделать, чтобы папка бралась из переменных окружения (.env)
-        file_path = f"created_docs/{data['full_name']} {datetime.datetime.now().strftime('%d.%m.%Y-%H.%M.%S')}.docx"
-        contract.save(file_path)
+    contract = DocxTemplate("docs_templates/contract_template.docx")
+    contract.render(data)
+    file_path = f"created_docs/{data['full_name']} {datetime.datetime.now().strftime('%d.%m.%Y-%H.%M.%S')}.docx"
+    contract.save(file_path)
 
-        contract_to_return = InputMediaDocument(media=FSInputFile(file_path))
-        result.append(contract_to_return)
+    contract_to_return = InputMediaDocument(media=FSInputFile(file_path))
+    result.append(contract_to_return)
 
-    if create_statement:
-        # TODO: сделать, чтобы путь до файла брался из переменных окружения (.env)
-        statement = DocxTemplate("docs_templates/statement_template.docx")
-        statement.render(data)
-        # TODO: сделать, чтобы папка бралась из переменных окружения (.env)
-        file_path = f"created_docs/{data['full_name']} {datetime.datetime.now().strftime('%d.%m.%Y-%H.%M.%S')}.docx"
-        statement.save(file_path)
+    statement = DocxTemplate("docs_templates/statement_template.docx")
+    statement.render(data)
+    file_path = f"created_docs/{data['full_name']} {datetime.datetime.now().strftime('%d.%m.%Y-%H.%M.%S')}.docx"
+    statement.save(file_path)
 
-        statement_to_return = InputMediaDocument(media=FSInputFile(file_path))
-        result.append(statement_to_return)
+    statement_to_return = InputMediaDocument(media=FSInputFile(file_path))
+    result.append(statement_to_return)
 
     return result
 
@@ -135,7 +130,6 @@ def genter(word: str):
 @documents_fsm_router.message(F.text, ApplicationForm.full_name)
 async def capture_full_name(message: Message, state: FSMContext):
     await state.update_data(full_name=message.text)
-    await state.update_data(full_name_gent=genter(message.text))
     await message.answer("Теперь укажите дату рождения (ДД.ММ.ГГГГ):")
     await state.set_state(ApplicationForm.birth_date)
 
@@ -179,7 +173,7 @@ async def capture_passport_given_by(message: Message, state: FSMContext):
 async def capture_passport_given_date(message: Message, state: FSMContext):
     await state.update_data(passport_given_date=message.text)
     await message.answer("Теперь напишите номер СНИЛС:")
-    await state.set_state(ApplicationForm.SNILS)
+    await state.set_state(ApplicationForm.INN)
 
 
 @documents_fsm_router.message(F.text, ApplicationForm.INN)
