@@ -4,6 +4,7 @@ from aiogram.types import (
     ReplyKeyboardMarkup,
     KeyboardButton
 )
+from bot.handlers.faq import FAQ_DATA
 
 
 def agreement_keyboard():
@@ -21,5 +22,14 @@ def after_start_keyboard():
             [KeyboardButton(text="📄 Заявление и договор")],
             [KeyboardButton(text="📋 Просмотр программ")],
             [KeyboardButton(text="📊 Рекомендации")],
+            [KeyboardButton(text="❓ FAQ")],
         ])
+    return keyboard
+
+
+def generate_faq_keyboard():
+    keyboard = InlineKeyboardMarkup(row_width=1)
+    for question in FAQ_DATA.keys():
+        keyboard.add(InlineKeyboardButton(text=question, callback_data=f"faq:{question}"))
+    keyboard.add(InlineKeyboardButton(text="❌ Отмена", callback_data="faq:cancel"))
     return keyboard
