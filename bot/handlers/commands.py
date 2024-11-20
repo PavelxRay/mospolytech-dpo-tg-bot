@@ -37,8 +37,17 @@ async def command_start_handler(message: Message, state: FSMContext) -> None:
     )
 
 
+@commands_router.message(Command("cancel"))
+async def cancel_command_handler(message: Message, state: FSMContext) -> None:
+    await state.clear()
+    await message.answer(
+        text="Текущее действие было отменено. Вы вернулись на  главное меню.",
+        reply_markup=after_start_keyboard()
+    )
+
+
 @commands_router.message(F.text.in_({"📊 Рекомендации", "📋 Просмотр программ"}))
-@commands_router.message(Command("programs", "advice", "cancel"))
+@commands_router.message(Command("programs", "advice"))
 async def not_implemented_commands_handler(message: Message) -> None:
     await message.answer("Пока не реализовано")
     # TODO: реализовать команду cancel. Она должна отменять любой текущий сценарий
