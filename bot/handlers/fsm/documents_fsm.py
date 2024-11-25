@@ -36,7 +36,7 @@ class ApplicationForm(StatesGroup):
     INN = State()
     phone = State()
     email = State()
-    workname = State()
+    department = State()
     speciality = State()
     current_date = State()
 
@@ -208,14 +208,13 @@ async def capture_phone(message: Message, state: FSMContext):
 @documents_fsm_router.message(F.text, ApplicationForm.education_info)
 async def capture_education_info(message: Message, state: FSMContext):
     await state.update_data(education_info=message.text)
-    await message.answer("Укажите занимаемую должность на момент обучения студент\
-     Московского Политехнического Университета, факультет/институт:")
-    await state.set_state(ApplicationForm.workname)
+    await message.answer("Укажите факультет/институт:")
+    await state.set_state(ApplicationForm.department)
 
 
-@documents_fsm_router.message(F.text, ApplicationForm.workname)
-async def capture_workname(message: Message, state: FSMContext):
-    await state.update_data(workname=message.text)
+@documents_fsm_router.message(F.text, ApplicationForm.department)
+async def capture_department(message: Message, state: FSMContext):
+    await state.update_data(department=message.text)
     await message.answer("Укажите Вашу специальность или нарвление подготовки: ")
     await state.set_state(ApplicationForm.speciality)
 
